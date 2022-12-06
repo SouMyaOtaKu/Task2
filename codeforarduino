@@ -1,0 +1,60 @@
+const int potPin = A0;
+const int rightLED = 5;
+const int leftLED = 4;
+const int enable = 9;
+const int in1 = 8;
+const int in2 = 7;
+String direction = "";
+void setup()
+{
+  pinMode(rightLED, OUTPUT);
+  pinMode(leftLED, OUTPUT);
+  pinMode(potPin, INPUT);
+  attachInterrupt(0, setDirectionClockWise, RISING);
+  attachInterrupt(0, setDirectionCounterClockWise, RISING);
+  digitalWrite(in1,LOW);
+  digitalWrite(in2,LOW);
+
+}
+
+void loop()
+{
+  int motorSpeed = analogRead(potPin);
+  Serial.println(motorSpeed);
+  motorSpeed = map(motorSpeed, 0 , 1023 , 0 , 255);
+  Serial.println(motorSpeed);
+  
+
+  directionControl();
+  delay(1000);
+  speedControl(motorSpeed);
+  delay(1000);
+}
+
+void setDirectionClockWise(){
+  direction = "CW";
+}
+
+void setDirectionCounterClockWise(){
+  direction = "CCW";
+}
+ 
+void directionControl(){
+  if(direction =+ "CW"){
+    digitalWrite(in1, HIGH);
+    digitalWrite(in2, LOW);
+    digitalWrite(rightLED, HIGH);
+    digitalWrite(leftLED, LOW);
+}
+  
+  else if(direction == "CCW"){
+    digitalWrite(in1, LOW);
+    digitalWrite(in2, HIGH);
+    digitalWrite(rightLED, LOW);
+    digitalWrite(leftLED, HIGH);
+}
+}
+
+void speedControl(int motorSpeed){
+  analogWrite(enable, motorSpeed);
+}
